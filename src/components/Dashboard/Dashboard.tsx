@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { type Task, type TaskFormData, type FilterOptions } from "../../types";
 import TaskForm from "../TaskForm/TaskForm";
 import TaskList from "../TaskList/TaskList";
@@ -16,6 +16,21 @@ const Dashboard: React.FC = () => {
 
   //Filters for status, priority, and search
   const [filters, setFilters] = useState<Partial<FilterOptions>>({});
+
+  //Load tasks from localStorage on first render
+  useEffect(() => {
+    const stored = localStorage.getItem("tasks");
+    if (stored) {
+      setTasks(JSON.parse(stored));
+    }
+  }, []);
+
+  // -----------------------
+  //save tasks on every change
+  // -----------------------
+  useEffect(() => {
+    localStorage.setItem("tasks", JSON.stringify(tasks)); // Store in browser
+  }, [tasks]); //run every time tasks change
 
   // -----------------------
   //Task Handlers
@@ -74,7 +89,7 @@ const Dashboard: React.FC = () => {
   // -----------------------
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
+    <div className="bg-blue-100 p-6 max-w-4xl mx-auto">
       {" "}
       {/* Container styling */}
       <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">
