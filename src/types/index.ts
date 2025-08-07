@@ -3,7 +3,7 @@ export interface Task {
   id: string; //Unique task ID
   title: string; //Title of the task
   description?: string; //Optional task description
-  status: "todo" | "in-progress" | "done"; //Current status of the task
+  status: "pending" | "in-progress" | "completed"; //Current status of the task
   priority: "low" | "medium" | "high"; //Task urgency level
   dueDate?: string; //Optional due date (in ISO date string format)
   createdAt: string; //Creation date (in ISO format)
