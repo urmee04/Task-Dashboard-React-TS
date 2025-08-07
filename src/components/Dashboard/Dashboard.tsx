@@ -99,12 +99,26 @@ const Dashboard: React.FC = () => {
       <TaskForm onAddTask={handleAddTask} />
       {/* Filter controls for status, priority, and search */}
       <TaskFilter onFilterChange={handleFilterChange} />
+      {/* No matches found message */}
+      {filteredTasks.length === 0 && tasks.length > 0 && (
+        <div className="bg-white p-4 rounded shadow mb-4 text-center text-gray-500">
+          No tasks match your current filters.
+        </div>
+      )}
+      {/* Empty state when no tasks exist */}
+      {tasks.length === 0 && (
+        <div className="bg-white p-4 rounded shadow mb-4 text-center text-gray-500">
+          No tasks found. Add your first task above!
+        </div>
+      )}
       {/* Filtered task list with delete and status control */}
-      <TaskList
-        tasks={filteredTasks} //pass only the tasks that match filters
-        onDelete={handleDeleteTask}
-        onStatusChange={handleStatusChange}
-      />
+      {filteredTasks.length > 0 && (
+        <TaskList
+          tasks={filteredTasks} //pass only the tasks that match filters
+          onDelete={handleDeleteTask}
+          onStatusChange={handleStatusChange}
+        />
+      )}
     </div>
   );
 };
