@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { type TaskFormData, type TaskFormProps } from "../../types";
 
 //TaskForm component: Handles task creation with validation
-
 const TaskForm: React.FC<TaskFormProps> = ({ onAddTask }) => {
   //Form state management
   const [formData, setFormData] = useState<TaskFormData>({
@@ -18,8 +17,10 @@ const TaskForm: React.FC<TaskFormProps> = ({ onAddTask }) => {
     dueDate?: string;
   }>({});
 
-  //handles input changes for all form fields
+  // success message state
+  const [success, setSuccess] = useState<string>("");
 
+  //handles input changes for all form fields
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -30,10 +31,11 @@ const TaskForm: React.FC<TaskFormProps> = ({ onAddTask }) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
     //clear any existing error for this field
     setErrors((prev) => ({ ...prev, [name]: undefined }));
+    // clear success message if user types again
+    setSuccess("");
   };
 
   //Validates form inputs and returns error messages
-
   const validateForm = () => {
     const newErrors: { title?: string; dueDate?: string } = {};
 
@@ -58,7 +60,6 @@ const TaskForm: React.FC<TaskFormProps> = ({ onAddTask }) => {
   };
 
   // handles form submission with validation
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -79,6 +80,10 @@ const TaskForm: React.FC<TaskFormProps> = ({ onAddTask }) => {
       priority: "medium",
       dueDate: "",
     });
+
+    // show success message
+    setSuccess("Task added successfully!");
+    setTimeout(() => setSuccess(""), 3000); // disappear after 3s
   };
 
   return (
@@ -87,18 +92,34 @@ const TaskForm: React.FC<TaskFormProps> = ({ onAddTask }) => {
       className="bg-white shadow-md rounded p-4 mb-6 space-y-3"
     >
       {/* Title Input */}
+      <label htmlFor="title" className="sr-only">
+        Task Title
+      </label>
       <input
+        id="title"
         name="title"
         value={formData.title}
         onChange={handleChange}
         placeholder="Task title*"
-        className="w-full border p-2 rounded"
+        className={`w-full border p-2 rounded ${
+          errors.title ? "border-red-500" : ""
+        }`}
+        aria-invalid={!!errors.title}
+        aria-describedby={errors.title ? "title-error" : undefined}
       />
       {/* Title validation error */}
-      {errors.title && <p className="text-red-500 text-sm">{errors.title}</p>}
+      {errors.title && (
+        <p id="title-error" className="text-red-500 text-sm">
+          {errors.title}
+        </p>
+      )}
 
       {/* Description Textarea */}
+      <label htmlFor="description" className="sr-only">
+        Description
+      </label>
       <textarea
+        id="description"
         name="description"
         value={formData.description}
         onChange={handleChange}
@@ -107,7 +128,11 @@ const TaskForm: React.FC<TaskFormProps> = ({ onAddTask }) => {
       />
 
       {/* Priority Select Dropdown */}
+      <label htmlFor="priority" className="sr-only">
+        Priority
+      </label>
       <select
+        id="priority"
         name="priority"
         value={formData.priority}
         onChange={handleChange}
@@ -119,17 +144,32 @@ const TaskForm: React.FC<TaskFormProps> = ({ onAddTask }) => {
       </select>
 
       {/* Due Date Input */}
+      <label htmlFor="dueDate" className="sr-only">
+        Due Date
+      </label>
       <input
         type="date"
+        id="dueDate"
         name="dueDate"
         value={formData.dueDate}
         onChange={handleChange}
-        className="w-full border p-2 rounded"
+        className={`w-full border p-2 rounded ${
+          errors.dueDate ? "border-red-500" : ""
+        }`}
         min={new Date().toISOString().split("T")[0]} // Disable past dates in picker
+        aria-invalid={!!errors.dueDate}
+        aria-describedby={errors.dueDate ? "dueDate-error" : undefined}
       />
       {/* Due date validation error */}
       {errors.dueDate && (
-        <p className="text-red-500 text-sm">{errors.dueDate}</p>
+        <p id="dueDate-error" className="text-red-500 text-sm">
+          {errors.dueDate}
+        </p>
+      )}
+
+      {/* Success message */}
+      {success && (
+        <p className="text-green-500 text-sm text-center">{success}</p>
       )}
 
       {/* Submit Button */}
