@@ -99,6 +99,40 @@ const Dashboard: React.FC = () => {
       <TaskForm onAddTask={handleAddTask} />
       {/* Filter controls for status, priority, and search */}
       <TaskFilter onFilterChange={handleFilterChange} />
+      {/* Task statistics */}
+      {tasks.length > 0 && (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 text-center">
+          <div className="bg-white p-4 rounded shadow">
+            <p className="text-lg font-bold">{tasks.length}</p>
+            <p className="text-sm text-gray-600">Total Tasks</p>
+          </div>
+          <div className="bg-white p-4 rounded shadow">
+            <p className="text-lg font-bold">
+              {tasks.filter((t) => t.status === "completed").length}
+            </p>
+            <p className="text-sm text-gray-600">Completed</p>
+          </div>
+          <div className="bg-white p-4 rounded shadow">
+            <p className="text-lg font-bold">
+              {tasks.filter((t) => t.status === "pending").length}
+            </p>
+            <p className="text-sm text-gray-600">Pending</p>
+          </div>
+          <div className="bg-white p-4 rounded shadow">
+            <p className="text-lg font-bold">
+              {
+                tasks.filter(
+                  (t) =>
+                    t.dueDate &&
+                    new Date(t.dueDate) < new Date() &&
+                    t.status !== "completed"
+                ).length
+              }
+            </p>
+            <p className="text-sm text-gray-600">Overdue</p>
+          </div>
+        </div>
+      )}
       {/* No matches found message */}
       {filteredTasks.length === 0 && tasks.length > 0 && (
         <div className="bg-white p-4 rounded shadow mb-4 text-center text-gray-500">
